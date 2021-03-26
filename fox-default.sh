@@ -39,17 +39,15 @@ main() {
 
 		# ensure variable
 		[ -z "$category" ] && {
+			local cmd="fzf"
 			if [ "$gui" = "yes" ]; then
-				category="$(cd "$defaultsDir" && find . -type d | cut -c 3- | grep "\S" | rofi -dmenu)"
-				if [ $? -ne 0 ]; then
-					die "Did not complete previous selection properly. Exiting"
-				fi
-			else
-				category="$(cd "$defaultsDir" && find . -type d | cut -c 3- | grep "\S" | fzf)"
-				if [ $? -ne 0 ]; then
-					die "Did not complete previous selection properly. Exiting"
-				fi
+				cmd="rofi -dmenu"
 			fi
+
+			category="$(plumbing_list_dir "$defaultsDir" | $cmd)" || {
+				die "Did not complete previous selection properly. Exiting"
+			}
+
 		}
 
 		# validate variable
@@ -60,19 +58,14 @@ main() {
 
 		# ensure variable
 		[ -z "$launcher" ] && {
+			local cmd="fzf"
 			if [ "$gui" = "yes" ]; then
-				launcher="$(cd "$defaultsDir/$category" && find . | cut -c 3- | grep "\S" | rofi -dmenu)"
-				if [ $? -ne 0 ]; then
-					die "Did not complete previous selection properly. Exiting"
-				fi
-			else
-				launcher="$(cd "$defaultsDir/$category" && find . | cut -c 3- | grep "\S" | fzf)"
-				if [ $? -ne 0 ]; then
-					die "Did not complete previous selection properly. Exiting"
-				fi
+				cmd="rofi -dmenu"
 			fi
 
-
+			launcher="$(plumbing_list_dir "$defaultsDir/$category" | $cmd)" || {
+				die "Did not complete previous selection properly. Exiting"
+			}
 		}
 
 		# validate variable
