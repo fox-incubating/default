@@ -3,8 +3,7 @@
 # async issues with +u when sourcing
 set -Eo pipefail
 
-# shellcheck disable=SC2164
-DIR="$(dirname "$(cd "$(dirname "$0")"; pwd -P)/$(basename "$0")")"
+DIR="$(dirname "$(readlink -f "$0")")"
 
 # ------------------------- start ------------------------ #
 source "$DIR/lib/util.sh"
@@ -92,6 +91,7 @@ main() {
 		# ensure variable
 		[ -z "$category" ] && {
 			if [ "$gui" = "yes" ]; then
+				# TODO: fox-default for selection chooser / filter thing
 				category="$(cd "$defaultsDir" && find . -type d | cut -c 3- | grep "\S" | rofi -dmenu)"
 				if [ $? -ne 0 ]; then
 					die "Did not complete previous selection properly. Exiting"
