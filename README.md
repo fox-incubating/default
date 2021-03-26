@@ -25,3 +25,5 @@ cd fox-default
 
 match completion for new 'set' features
 TODO: move foo.current to foo/.current
+
+# TODO: fox-default for selection chooser / filter thing

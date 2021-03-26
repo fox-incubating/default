@@ -28,6 +28,16 @@ die() {
 	fi
 }
 
+notify_die() {
+	msg="fox-default: $2"
+
+	[ "$1" = yes ] && {
+		notify-send "$msg"
+	}
+
+	die "$msg"
+}
+
 ensure() {
 	"$@" || die "'$*' failed"
 }
