@@ -24,3 +24,4 @@ cd fox-default
 ## TODO
 
 match completion for new 'set' features
+TODO: move foo.current to foo/.current

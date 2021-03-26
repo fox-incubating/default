@@ -58,8 +58,8 @@ util_show_help() {
 
 		Examples:
 		    fox-default launch image-viewer
-			 fox-default set image-viewer svix
+		    fox-default set image-viewer svix
 		    fox-default --gui set
-			 fox-default --help
+		    fox-default --help
 	EOF
 }

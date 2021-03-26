@@ -3,7 +3,7 @@
 # async issues with +u when sourcing
 set -Eo pipefail
 
-DIR="$(dirname "$(readlink -f "$0")")"
+DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" &>/dev/null && pwd)"
 
 # ------------------------- start ------------------------ #
 source "$DIR/lib/util.sh"
