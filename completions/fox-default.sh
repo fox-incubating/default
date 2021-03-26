@@ -48,4 +48,6 @@ _fox-default() {
 		*) ;;
 	esac
 
-} && complete -F _fox-default fox-default
+} && {
+	complete -F _fox-default fox-default
+}

@@ -23,5 +23,4 @@ cd fox-default
 
 ## TODO
 
---help --version
 match completion for new 'set' features

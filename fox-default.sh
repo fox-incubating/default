@@ -17,6 +17,20 @@ main() {
 		die 'No subcommand found'
 	}
 
+	# gui
+	local gui=no
+	if [ "$1" = "--gui" ]; then
+		gui=yes
+		shift
+	fi
+
+	case "$*" in
+	*--gui*)
+		die "Must place '--gui' as first arg"
+		;;
+	esac
+
+
 	case "$1" in
 	set)
 		shift
@@ -26,9 +40,16 @@ main() {
 
 		# ensure variable
 		[ -z "$category" ] && {
-			category="$(cd "$defaultsDir" && find . -type d | cut -c 3- | grep "\S" | fzf)"
-			if [ $? -ne 0 ]; then
-				die "Did not complete previous selection properly. Exiting"
+			if [ "$gui" = "yes" ]; then
+				category="$(cd "$defaultsDir" && find . -type d | cut -c 3- | grep "\S" | rofi -dmenu)"
+				if [ $? -ne 0 ]; then
+					die "Did not complete previous selection properly. Exiting"
+				fi
+			else
+				category="$(cd "$defaultsDir" && find . -type d | cut -c 3- | grep "\S" | fzf)"
+				if [ $? -ne 0 ]; then
+					die "Did not complete previous selection properly. Exiting"
+				fi
 			fi
 		}
 
@@ -40,10 +61,19 @@ main() {
 
 		# ensure variable
 		[ -z "$launcher" ] && {
-			launcher="$(cd "$defaultsDir/$category" && find . | cut -c 3- | grep "\S" | fzf)"
-			if [ $? -ne 0 ]; then
-				die "Did not complete previous selection properly. Exiting"
+			if [ "$gui" = "yes" ]; then
+				launcher="$(cd "$defaultsDir/$category" && find . | cut -c 3- | grep "\S" | rofi -dmenu)"
+				if [ $? -ne 0 ]; then
+					die "Did not complete previous selection properly. Exiting"
+				fi
+			else
+				launcher="$(cd "$defaultsDir/$category" && find . | cut -c 3- | grep "\S" | fzf)"
+				if [ $? -ne 0 ]; then
+					die "Did not complete previous selection properly. Exiting"
+				fi
 			fi
+
+
 		}
 
 		# validate variable
@@ -61,10 +91,17 @@ main() {
 
 		# ensure variable
 		[ -z "$category" ] && {
-			local category
-			category="$(cd "$defaultsDir" && find . -type d | cut -c 3- | grep "\S" | fzf)"
-			if [ $? -ne 0 ]; then
-				die "Did not complete previous selection properly. Exiting"
+			if [ "$gui" = "yes" ]; then
+				category="$(cd "$defaultsDir" && find . -type d | cut -c 3- | grep "\S" | rofi -dmenu)"
+				if [ $? -ne 0 ]; then
+					die "Did not complete previous selection properly. Exiting"
+				fi
+			else
+				local category
+				category="$(cd "$defaultsDir" && find . -type d | cut -c 3- | grep "\S" | fzf)"
+				if [ $? -ne 0 ]; then
+					die "Did not complete previous selection properly. Exiting"
+				fi
 			fi
 		}
 
@@ -73,13 +110,15 @@ main() {
 			die "Application category '$category' does not exist"
 		fi
 
-
 		# get variable
 		launcher="$(<"$defaultsDir/$category.current")"
 
 		# ensure variable
 		[ -z "$launcher" ] && {
-			die "Launcher is not set. Please set with 'fox-default set'"
+			[ "$gui" = yes ] && {
+				notify-send "Launcher for '$category' is not set. Please set one"
+			}
+			die "Launcher for '$category' is not set. Please set with 'fox-default set'"
 		}
 
 		# ------------------------ launch ------------------------ #
@@ -100,6 +139,9 @@ main() {
 		# shellcheck disable=SC2093
 		exec "$launcher"
 
+		;;
+	--help)
+		util_show_help
 		;;
 	*)
 		die "Subcommand not found"

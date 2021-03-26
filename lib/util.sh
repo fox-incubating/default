@@ -54,10 +54,12 @@ util_show_help() {
 
 		Flags:
 		    --help
-		    --version
+		    --gui
 
 		Examples:
 		    fox-default launch image-viewer
-		    fox-default set
+			 fox-default set image-viewer svix
+		    fox-default --gui set
+			 fox-default --help
 	EOF
 }
