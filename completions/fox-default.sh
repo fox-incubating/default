@@ -1,5 +1,7 @@
 # shellcheck shell=bash
 
+DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" &>/dev/null && pwd)"
+
 _fox-default-launch() {
 	local cur="${COMP_WORDS[COMP_CWORD]}"
 

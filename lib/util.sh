@@ -17,8 +17,15 @@ req() {
 }
 
 die() {
-	log_error "${*-'die: '}. Exiting"
-	exit 1
+	[ -n "$*" ] && {
+		log_error "${*-'die: '}. Exiting"
+	}
+
+	if [ "${BASH_SOURCE[0]}" != "$0" ]; then
+		return 1
+	else
+		exit 1
+	fi
 }
 
 ensure() {
