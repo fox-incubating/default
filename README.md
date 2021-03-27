@@ -23,5 +23,5 @@ cd fox-default
 
 ## TODO
 
-match completion for new 'set' features
-TODO: fox-default for selection chooser / filter thing
+-  'get' subcommand
+-  use fox-default when using fuzzer / filter (dmenu vs rofi -dmenu, etc.)

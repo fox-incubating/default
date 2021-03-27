@@ -75,7 +75,7 @@ main() {
 
 		# set variable
 		echo "$launcher" >| "$defaultsDir/$category/_.current"
-		printf "Category '%s' defaults to '%s'\n" "$category" "$launcher" | tee /dev/tty | xargs -I{} notify-send "{}"
+		notify_print "$gui" "Category '$category' defaults to '$launcher'"
 		;;
 	launch)
 		shift

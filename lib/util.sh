@@ -32,14 +32,20 @@ notify_die() {
 	msg="fox-default: $2"
 
 	[ "$1" = yes ] && {
-		notify-send "$msg"
+		notify-send -u critical "$msg"
 	}
 
 	die "$msg"
 }
 
-ensure() {
-	"$@" || die "'$*' failed"
+notify_print() {
+	msg="fox-default: $2"
+
+	[ "$1" = yes ] && {
+		notify-send "$msg"
+	}
+
+	echo -e "$msg"
 }
 
 log_info() {
