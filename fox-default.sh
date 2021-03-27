@@ -63,7 +63,7 @@ main() {
 				cmd="rofi -dmenu"
 			fi
 
-			launcher="$(plumbing_list_file "$defaultsDir/$category" | $cmd)" || {
+			launcher="$(plumbing_list_file "$defaultsDir/$category" | grep -v "_.current" | $cmd)" || {
 				notify_die "$gui" "Did not complete previous selection properly. Exiting" || return
 			}
 		}
@@ -75,7 +75,7 @@ main() {
 
 		# set variable
 		echo "$launcher" >| "$defaultsDir/$category/_.current"
-		printf "Category '%s' defaults to '%s\n" "$category" "$launcher"
+		printf "Category '%s' defaults to '%s'\n" "$category" "$launcher" | tee /dev/tty | xargs -I{} notify-send "{}"
 		;;
 	launch)
 		shift
