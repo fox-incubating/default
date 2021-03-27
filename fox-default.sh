@@ -17,7 +17,7 @@ main() {
 		notify_die "$gui" 'No subcommand found' || return
 	}
 
-	# gui
+	# whether or not we are launching GUI selection interfaces
 	local gui=no
 	if [ "$1" = "--gui" ]; then
 		gui=yes
@@ -63,7 +63,7 @@ main() {
 				cmd="rofi -dmenu"
 			fi
 
-			launcher="$(plumbing_list_dir "$defaultsDir/$category" | $cmd)" || {
+			launcher="$(plumbing_list_file "$defaultsDir/$category" | $cmd)" || {
 				notify_die "$gui" "Did not complete previous selection properly. Exiting" || return
 			}
 		}
@@ -73,7 +73,8 @@ main() {
 			notify_die "$gui" "Application '$launcher' does not exist" || return
 		}
 
-		echo "$launcher" >| "$defaultsDir/$category.current"
+		# set variable
+		echo "$launcher" >| "$defaultsDir/$category/_.current"
 		printf "Category '%s' defaults to '%s\n" "$category" "$launcher"
 		;;
 	launch)
@@ -88,19 +89,27 @@ main() {
 				cmd="rofi -dmenu"
 			fi
 
-			category="$(plumbing_list_dir "$defaultsDir" | $cmd)" || {
+			ensure_has_dot_current() {
+				while IFS= read -r dir; do
+					if [ -s "$defaultsDir/$dir/_.current" ]; then
+						echo "$dir"
+					fi
+				done
+			}
+
+			category="$(plumbing_list_dir "$defaultsDir" | ensure_has_dot_current | grep "\S" | $cmd)" || {
 				notify_die "$gui" "Did not complete previous selection properly. Exiting" || return
 			}
 
 		}
 
 		# validate variable
-		if [ ! -d "$defaultsDir/$category" ] || [ ! -r "$defaultsDir/$category.current" ]; then
+		if [ ! -d "$defaultsDir/$category" ] || [ ! -s "$defaultsDir/$category/_.current" ]; then
 			notify_die "$gui" "Application category '$category' does not exist" || return
 		fi
 
 		# get variable
-		launcher="$(<"$defaultsDir/$category.current")"
+		launcher="$(<"$defaultsDir/$category/_.current")"
 
 		# ensure variable
 		[ -z "$launcher" ] && {
