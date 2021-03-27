@@ -121,7 +121,7 @@ main() {
 		# we manually set an execute command. source it
 		if [ -s "$defaultsDir/$category/$launcher" ]; then
 			source "$defaultsDir/$category/$launcher"
-			die
+			die || return
 		fi
 
 		# launcher file doesn't have content...
