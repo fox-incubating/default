@@ -95,6 +95,7 @@ util_show_help() {
 		Examples:
 		    choose launch image-viewer
 		    choose set image-viewer svix
+		    choose --ignore-errors get image-viewer
 		    choose --gui set
 		    choose --help
 	EOF

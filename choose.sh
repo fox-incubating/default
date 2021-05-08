@@ -18,18 +18,26 @@ main() {
 		return
 	}
 
+	# TODO: cleanup
 	# whether or not we are launching GUI selection interfaces
 	local gui=no
-	if [ "$1" = "--gui" ]; then
+	local ignoreErrors=no
+	if [ "$1" = "--gui" ] || [ "$2" = "--gui" ]; then
 		gui=yes
+		shift
+	fi
+	if [ "$1" = "--ignore-errors" ] || [ "$2" = "--ignore-errors" ]; then
+		ignoreErrors=yes
 		shift
 	fi
 
 	case "$*" in
 	*--gui*)
 		notify_die "$gui" "Must place '--gui' as first arg"
+		return ;;
+	*--ignore-errors*)
+		notify_die "$gui" "Must place '--ignore-errors' as first arg"
 		return
-		;;
 	esac
 
 
@@ -42,7 +50,6 @@ main() {
 
 		category="$(util_get_category "$category" "$gui")"
 		ifCmdFailed "$?" && return
-
 
 		program="$(util_get_program "$category" "$program" "$gui")"
 		ifCmdFailed "$?" && return
@@ -64,12 +71,16 @@ main() {
 		ifCmdFailed "$?" && return
 
 		# get variable
+		[ ! -f "$dbDir/$category/_.current" ] && {
+			notify_die "$gui" "Program for '$category' is not set. Please set with 'fox-default set'"
+		}
+
 		program="$(<"$dbDir/$category/_.current")"
 
 		# ensure variable (we already use 'ensure_has_dot_current' in
 		# util_get_category_filter; this is another safeguard)
 		[ -z "$program" ] && {
-			notify_die "$gui" "program for '$category' is not set. Please set with 'fox-default set'"
+			notify_die "$gui" "Program for '$category' is not set. Please set with 'fox-default set'"
 			return
 		}
 
@@ -100,6 +111,31 @@ main() {
 		shift
 
 		local category="$1"
+
+		category="$(util_get_category_filter "$category" "$gui")"
+		ifCmdFailed "$?" && return
+
+		# get variable
+		# TODO: cleanup
+		[ ! -f "$dbDir/$category/_.current" ] && [ "$ignoreErrors" = no ] && {
+			notify_die "$gui" "Program for '$category' is not set. Please set with 'fox-default set'"
+		}
+
+		program="$(<"$dbDir/$category/_.current")"
+
+		# ensure variable (we already use 'ensure_has_dot_current' in
+		# util_get_category_filter; this is another safeguard)
+		[ -z "$program" ] && [ "$ignoreErrors" = no ] && {
+			notify_die "$gui" "Program for '$category' is not set. Please set with 'fox-default set'"
+			return
+		}
+
+		# source pre-exec
+		if [ -s "$dbDir/$category/launch.sh" ]; then
+			source "$dbDir/$category/launch.sh"
+		fi
+
+		printf "%s" "$program"
 		;;
 	--help)
 		util_show_help
