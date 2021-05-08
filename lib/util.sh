@@ -132,11 +132,14 @@ util_get_category() {
 		}
 	fi
 
-	# validate variable
-	[ -d "$dbDir/$category" ] || {
-		notify_die "$gui" "Category '$category' does not exist"
+	# validate
+	if [ ! -d "$dbDir/$category" ]; then
+		notify_die "$gui" "Application category '$category' does not exist"
 		return
-	}
+	elif [ ! -s "$dbDir/$category/_.current" ]; then
+		notify_die "$gui" "Application category '$category' does not have a default program associated with it"
+		return
+	fi
 
 	printf "%s" "$category"
 }
@@ -171,9 +174,12 @@ util_get_category_filter() {
 		}
 	}
 
-	# validate variable
-	if [ ! -d "$dbDir/$category" ] || [ ! -s "$dbDir/$category/_.current" ]; then
+	# validate
+	if [ ! -d "$dbDir/$category" ]; then
 		notify_die "$gui" "Application category '$category' does not exist"
+		return
+	elif [ ! -s "$dbDir/$category/_.current" ]; then
+		notify_die "$gui" "Application category '$category' does not have a default program associated with it"
 		return
 	fi
 

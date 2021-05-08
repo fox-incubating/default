@@ -11,7 +11,7 @@ _in_arr() {
 	return 1
 }
 
-_fox-default-set() {
+_choose-set() {
 	local cur="${COMP_WORDS[COMP_CWORD]}"
 
 	local -a dirs=()
@@ -39,7 +39,7 @@ _fox-default-set() {
 
 }
 
-_fox-default-launch() {
+_choose-launch() {
 	local cur="${COMP_WORDS[COMP_CWORD]}"
 
 	local -a dirs=()
@@ -49,7 +49,7 @@ _fox-default-launch() {
 	COMPREPLY=($(IFS=' ' compgen -W "${dirs[*]}" -- "$cur"))
 }
 
-_fox-default() {
+_choose() {
 	local i=1 cmd
 
 	# iterate over COMP_WORDS (ending at currently completed word)
@@ -68,7 +68,7 @@ _fox-default() {
 		(( i++ ))
 	done
 
-	# check if we're completing 'fox-default'
+	# check if we're completing 'choose'
 	if [[ "$i" -eq "$COMP_CWORD" ]]; then
 		local cur="${COMP_WORDS[COMP_CWORD]}"
 		# shellcheck disable=SC2207
@@ -76,15 +76,15 @@ _fox-default() {
 		return
 	fi
 
-	# if we're not completing 'fox-default', then we're completing a subcommand
+	# if we're not completing 'choose', then we're completing a subcommand
 	case "$cmd" in
 		set)
-			_fox-default-set ;;
+			_choose-set ;;
 		launch)
-			_fox-default-launch ;;
+			_choose-launch ;;
 		*) ;;
 	esac
 
 } && {
-	complete -F _fox-default fox-default
+	complete -F _choose choose
 }
