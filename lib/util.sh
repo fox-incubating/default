@@ -29,23 +29,23 @@ die() {
 }
 
 notify_die() {
-	msg="fox-default: $2"
+	msg="$2"
 
 	[ "$1" = yes ] && {
-		notify-send -u critical "$msg"
+		notify-send -u critical "Choose: $msg. Exiting"
 	}
 
 	die "$msg"
 }
 
-notify_print() {
-	msg="fox-default: $2"
+notify_info() {
+	msg="$2"
 
 	[ "$1" = yes ] && {
-		notify-send "$msg"
+		notify-send "Choose: $msg"
 	}
 
-	echo -e "$msg"
+	log_info "$msg"
 }
 
 log_info() {
@@ -58,6 +58,35 @@ log_warn() {
 
 log_error() {
 	printf "\033[0;31m%s\033[0m\n" "Error: $*" >&2
+}
+
+ifCmdFailed() {
+	statusCode="$1"
+	[ -z "$statusCode" ] && die "ifCmdFailed: statusCode cannot be empty"
+
+	if [ "$statusCode" -eq 0 ]; then
+		return 1
+	else
+		# if the statusCode is not zero (command failed),
+		# we return success so the '&&' operation works
+		return 0
+	fi
+}
+
+get_cmd() {
+	local isGui="$1"
+
+	local cmd="fzf"
+	if [ "$isGui" = "yes" ]; then
+		# TODO: check for fox-default value
+		if command -v rofi >&/dev/null; then
+			cmd="rofi -dmenu"
+		elif command -v dmenu >&/dev/null; then
+			cmd="dmenu"
+		fi
+	fi
+
+	printf "%s" "$cmd"
 }
 
 

@@ -9,12 +9,13 @@ DIR="$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")"
 source "$DIR/lib/util.sh"
 source "$DIR/lib/plumbing.sh"
 
-defaultsDir="${XDG_CONFIG_HOME:-$HOME/.config}/fox-default/defaults"
+dbDir="${CHOOSE_DB_DIR:-${XDG_CONFIG_HOME:-$HOME/.config}/choose/db}"
 
 main() {
 	[ -z "$1" ] && {
 		util_show_help
-		notify_die "$gui" 'No subcommand found' || return
+		notify_die "$gui" 'No subcommand found'
+		return
 	}
 
 	# whether or not we are launching GUI selection interfaces
@@ -26,7 +27,8 @@ main() {
 
 	case "$*" in
 	*--gui*)
-		notify_die "$gui" "Must place '--gui' as first arg" || return
+		notify_die "$gui" "Must place '--gui' as first arg"
+		return
 		;;
 	esac
 
@@ -36,46 +38,51 @@ main() {
 		shift
 
 		local category="$1"
-		local launcher="$2"
+		local program="$2"
 
 		# ensure variable
 		[ -z "$category" ] && {
-			local cmd="fzf"
-			if [ "$gui" = "yes" ]; then
-				cmd="rofi -dmenu"
-			fi
+			local cmd
+			cmd="$(get_cmd "$gui")"
 
-			category="$(plumbing_list_dir "$defaultsDir" | $cmd)" || {
-				notify_die "$gui" "Did not complete previous selection properly. Exiting" || return
+			category="$(plumbing_list_dir "$dbDir" | $cmd)"
+			ifCmdFailed "$?" && {
+				notify_die "$gui" "Did not complete previous selection properly"
+				return
 			}
 		}
 
 		# validate variable
-		[ -d "$defaultsDir/$category" ] || {
-			notify_die "$gui" "Category '$category' does not exist" || return
+		[ -d "$dbDir/$category" ] || {
+			notify_die "$gui" "Category '$category' does not exist"
+			return
 		}
-
 
 		# ensure variable
-		[ -z "$launcher" ] && {
-			local cmd="fzf"
-			if [ "$gui" = "yes" ]; then
-				cmd="rofi -dmenu"
-			fi
+		[ -z "$program" ] && {
+			local userSelectCmd="fzf"
+			userSelectCmd="$(get_cmd "$gui")"
 
-			launcher="$(plumbing_list_file "$defaultsDir/$category" | grep -v "_.current" | $cmd)" || {
-				notify_die "$gui" "Did not complete previous selection properly. Exiting" || return
+			program="$(
+				plumbing_list_dir "$dbDir/$category" \
+				| grep -v "_.current" \
+				| $userSelectCmd
+			)"
+			ifCmdFailed "$?" && {
+				notify_die "$gui" "Did not complete previous selection properly"
+				return
 			}
 		}
 
 		# validate variable
-		[ -f "$defaultsDir/$category/$launcher" ] || {
-			notify_die "$gui" "Application '$launcher' does not exist" || return
+		[ -d "$dbDir/$category/$program" ] || {
+			notify_die "$gui" "Application '$program' does not exist"
+			return
 		}
 
 		# set variable
-		echo "$launcher" >| "$defaultsDir/$category/_.current"
-		notify_print "$gui" "Category '$category' defaults to '$launcher'"
+		echo "$program" >| "$dbDir/$category/_.current"
+		notify_info "$gui" "Category '$category' defaults to '$program'"
 		;;
 	launch)
 		shift
@@ -84,60 +91,69 @@ main() {
 
 		# ensure variable
 		[ -z "$category" ] && {
-			local cmd="fzf"
-			if [ "$gui" = "yes" ]; then
-				cmd="rofi -dmenu"
-			fi
+			local userSelectCmd
+			userSelectCmd="$(get_cmd "$gui")"
 
 			ensure_has_dot_current() {
 				while IFS= read -r dir; do
-					if [ -s "$defaultsDir/$dir/_.current" ]; then
+					if [ -s "$dbDir/$dir/_.current" ]; then
 						echo "$dir"
 					fi
 				done
 			}
 
-			category="$(plumbing_list_dir "$defaultsDir" | ensure_has_dot_current | grep "\S" | $cmd)" || {
-				notify_die "$gui" "Did not complete previous selection properly. Exiting" || return
+			category="$(
+				plumbing_list_dir "$dbDir" \
+				| ensure_has_dot_current \
+				| grep "\S" \
+				| $userSelectCmd
+			)"
+			ifCmdFailed "$?" && {
+				notify_die "$gui" "Did not complete previous selection properly"
+				return
 			}
 
 		}
 
 		# validate variable
-		if [ ! -d "$defaultsDir/$category" ] || [ ! -s "$defaultsDir/$category/_.current" ]; then
-			notify_die "$gui" "Application category '$category' does not exist" || return
+		if [ ! -d "$dbDir/$category" ] || [ ! -s "$dbDir/$category/_.current" ]; then
+			notify_die "$gui" "Application category '$category' does not exist"
+			return
 		fi
 
 		# get variable
-		launcher="$(<"$defaultsDir/$category/_.current")"
+		program="$(<"$dbDir/$category/_.current")"
 
 		# ensure variable
-		[ -z "$launcher" ] && {
-			notify_die "$gui" "Launcher for '$category' is not set. Please set with 'fox-default set'" || return
+		[ -z "$program" ] && {
+			notify_die "$gui" "program for '$category' is not set. Please set with 'fox-default set'"
+			return
 		}
 
 		# ------------------------ launch ------------------------ #
-		# if launcher file has content, it means
+		# if program file has content, it means
 		# we manually set an execute command. source it
-		if [ -s "$defaultsDir/$category/$launcher" ]; then
-			source "$defaultsDir/$category/$launcher"
-			die || return
+		if [ -s "$dbDir/$category/$program/launch.sh" ]; then
+			source "$dbDir/$category/$program/launch.sh"
+			die
+			return
+		# if file does not have content, we raw exec it
+		else
+			# ensure variable is in the environment
+			command -v "$program" &>/dev/null || {
+				notify_die "$gui" "Executable '$program' does not exist or is not in the current environment"
+				return
+			}
+
+			exec "$program"
 		fi
-
-		# launcher file doesn't have content...
-
-		# ensure variable is in the environment
-		command -v "$launcher" &>/dev/null 2>&1 || {
-			notify_die "$gui" "Executable '$launcher' does not exist or is not in the current environment" || return
-		}
-
-		exec "$launcher"
 		;;
 	--help)
 		util_show_help
 		;;
 	*)
-		notify_die "$gui" "Subcommand not found" || return
+		notify_die "$gui" "Subcommand not found"
+		return
 	;;
 	esac
 }

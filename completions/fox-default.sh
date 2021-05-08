@@ -1,20 +1,6 @@
 # shellcheck shell=bash
 
-defaultsDir="${XDG_CONFIG_HOME:-$HOME/.config}/fox-default/defaults"
-
-_debug() {
-    echo
-    echo "#COMP_WORDS=${#COMP_WORDS[@]}"
-    echo "COMP_WORDS=("
-    for x in "${COMP_WORDS[@]}"; do
-        echo "'$x'"
-    done
-    echo ")"
-    echo "COMP_CWORD=${COMP_CWORD}"
-    echo "COMP_LINE='${COMP_LINE}'"
-    echo "COMP_POINT=${COMP_POINT}"
-    echo
-}
+dbDir="${CHOOSE_DB_DIR:-${XDG_CONFIG_HOME:-$HOME/.config}/choose/db}"
 
 _in_arr() {
 	for e in "${@:2}"; do
@@ -29,12 +15,12 @@ _fox-default-set() {
 	local cur="${COMP_WORDS[COMP_CWORD]}"
 
 	local -a dirs=()
-	readarray -d $'\0' dirs < <(find "$defaultsDir" -maxdepth 1 -mindepth 1 -type d -printf '%f\0')
+	readarray -d $'\0' dirs < <(find "$dbDir" -maxdepth 1 -mindepth 1 -type d -printf '%f\0')
 
 	# if we are completing the second element
 	if _in_arr "${COMP_WORDS[2]}" "${dirs[@]}"; then
 		local -a files=()
-		readarray -d $'\0' files < <(find "$defaultsDir/${COMP_WORDS[2]}" -maxdepth 1 -mindepth 1 -type f -printf '%f\0')
+		readarray -d $'\0' files < <(find "$dbDir/${COMP_WORDS[2]}" -maxdepth 1 -mindepth 1 -type f -printf '%f\0')
 
 		# remove _.current
 		local -a files_filtered=()
@@ -57,7 +43,7 @@ _fox-default-launch() {
 	local cur="${COMP_WORDS[COMP_CWORD]}"
 
 	local -a dirs=()
-	readarray dirs < <(plumbing_list_dir "$defaultsDir")
+	readarray dirs < <(plumbing_list_dir "$dbDir")
 
 	# shellcheck disable=SC2207
 	COMPREPLY=($(IFS=' ' compgen -W "${dirs[*]}" -- "$cur"))
