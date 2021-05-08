@@ -79,7 +79,7 @@ ifCmdFailed() {
 util_show_help() {
 	cat <<-EOF
 		Usage:
-		    fox-default [command]
+		    choose [command]
 
 		Commands:
 		    launch [category]
@@ -93,10 +93,10 @@ util_show_help() {
 		    --gui
 
 		Examples:
-		    fox-default launch image-viewer
-		    fox-default set image-viewer svix
-		    fox-default --gui set
-		    fox-default --help
+		    choose launch image-viewer
+		    choose set image-viewer svix
+		    choose --gui set
+		    choose --help
 	EOF
 }
 
