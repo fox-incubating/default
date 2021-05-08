@@ -131,8 +131,8 @@ main() {
 		}
 
 		# source pre-exec
-		if [ -s "$dbDir/$category/launch.sh" ]; then
-			source "$dbDir/$category/launch.sh"
+		if [ -s "$dbDir/$category/get.sh" ]; then
+			source "$dbDir/$category/get.sh"
 		fi
 
 		printf "%s" "$program"
