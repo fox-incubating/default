@@ -47,6 +47,11 @@ main() {
 		program="$(util_get_program "$category" "$program" "$gui")"
 		ifCmdFailed "$?" && return
 
+		# source pre-exec
+		if [ -s "$dbDir/$category/set.sh" ]; then
+			source "$dbDir/$category/set.sh"
+		fi
+
 		echo "$program" >| "$dbDir/$category/_.current"
 		notify_info "$gui" "Category '$category' defaults to '$program'"
 		;;
@@ -69,6 +74,11 @@ main() {
 		}
 
 		# ------------------------ launch ------------------------ #
+		# source pre-exec
+		if [ -s "$dbDir/$category/launch.sh" ]; then
+			source "$dbDir/$category/launch.sh"
+		fi
+
 		# if program file has content, it means
 		# we manually set an execute command. source it
 		if [ -s "$dbDir/$category/$program/launch.sh" ]; then

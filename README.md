@@ -27,10 +27,20 @@ cd fox-default
 # Folder Structure
 
 - db
+
   - terminal-emulator
+
+    - alacritty
+    - kitty
+      - launch.sh
+      - set.sh
+      - get.sh
+    - termite
+
     - launch.sh
     - set.sh
     - get.sh
+
   - image-viewer
 
 ## TODO
