@@ -73,22 +73,6 @@ ifCmdFailed() {
 	fi
 }
 
-get_cmd() {
-	local isGui="$1"
-
-	local cmd="fzf"
-	if [ "$isGui" = "yes" ]; then
-		# TODO: check for fox-default value
-		if command -v rofi >&/dev/null; then
-			cmd="rofi -dmenu"
-		elif command -v dmenu >&/dev/null; then
-			cmd="dmenu"
-		fi
-	fi
-
-	printf "%s" "$cmd"
-}
-
 
 # ------------------- helper functions ------------------- #
 
@@ -114,4 +98,113 @@ util_show_help() {
 		    fox-default --gui set
 		    fox-default --help
 	EOF
+}
+
+util_get_cmd() {
+	local isGui="$1"
+
+	local cmd="fzf"
+	if [ "$isGui" = "yes" ]; then
+		# TODO: check for fox-default value
+		if command -v rofi >&/dev/null; then
+			cmd="rofi -dmenu"
+		elif command -v dmenu >&/dev/null; then
+			cmd="dmenu"
+		fi
+	fi
+
+	printf "%s" "$cmd"
+}
+
+# almost duplicate of util_get_category_filter
+util_get_category() {
+	local category="$1"
+	local gui="$2"
+
+	if [ -z "$category" ]; then
+		local cmd
+		cmd="$(util_get_cmd "$gui")"
+
+		category="$(plumbing_list_dir "$dbDir" | $cmd)"
+		ifCmdFailed "$?" && {
+			notify_die "$gui" "Did not complete previous selection properly"
+			return
+		}
+	fi
+
+	# validate variable
+	[ -d "$dbDir/$category" ] || {
+		notify_die "$gui" "Category '$category' does not exist"
+		return
+	}
+
+	printf "%s" "$category"
+}
+
+
+# almost duplicate of util_get_category
+util_get_category_filter() {
+	local category="$1"
+	local gui="$2"
+
+	[ -z "$category" ] && {
+		local userSelectCmd
+		userSelectCmd="$(util_get_cmd "$gui")"
+
+		ensure_has_dot_current() {
+			while IFS= read -r dir; do
+				if [ -s "$dbDir/$dir/_.current" ]; then
+					echo "$dir"
+				fi
+			done
+		}
+
+		category="$(
+			plumbing_list_dir "$dbDir" \
+			| ensure_has_dot_current \
+			| grep "\S" \
+			| $userSelectCmd
+		)"
+		ifCmdFailed "$?" && {
+			notify_die "$gui" "Did not complete previous selection properly"
+			return
+		}
+	}
+
+	# validate variable
+	if [ ! -d "$dbDir/$category" ] || [ ! -s "$dbDir/$category/_.current" ]; then
+		notify_die "$gui" "Application category '$category' does not exist"
+		return
+	fi
+
+	printf "%s" "$category"
+}
+
+util_get_program() {
+	local category="$1"
+	local program="$2"
+	local gui="$3"
+
+	[ -z "$program" ] && {
+		local userSelectCmd="fzf"
+		userSelectCmd="$(util_get_cmd "$gui")"
+
+		program="$(
+			plumbing_list_dir "$dbDir/$category" \
+			| grep -v "_.current" \
+			| $userSelectCmd
+		)"
+		ifCmdFailed "$?" && {
+			notify_die "$gui" "Did not complete previous selection properly"
+			return
+		}
+	}
+
+	# validate variable
+	[ -d "$dbDir/$category/$program" ] || {
+		notify_die "$gui" "Application '$program' does not exist"
+		return
+	}
+
+	printf "%s" "$program"
 }

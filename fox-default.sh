@@ -40,47 +40,13 @@ main() {
 		local category="$1"
 		local program="$2"
 
-		# ensure variable
-		[ -z "$category" ] && {
-			local cmd
-			cmd="$(get_cmd "$gui")"
+		category="$(util_get_category "$category" "$gui")"
+		ifCmdFailed "$?" && return
 
-			category="$(plumbing_list_dir "$dbDir" | $cmd)"
-			ifCmdFailed "$?" && {
-				notify_die "$gui" "Did not complete previous selection properly"
-				return
-			}
-		}
 
-		# validate variable
-		[ -d "$dbDir/$category" ] || {
-			notify_die "$gui" "Category '$category' does not exist"
-			return
-		}
+		program="$(util_get_program "$category" "$program" "$gui")"
+		ifCmdFailed "$?" && return
 
-		# ensure variable
-		[ -z "$program" ] && {
-			local userSelectCmd="fzf"
-			userSelectCmd="$(get_cmd "$gui")"
-
-			program="$(
-				plumbing_list_dir "$dbDir/$category" \
-				| grep -v "_.current" \
-				| $userSelectCmd
-			)"
-			ifCmdFailed "$?" && {
-				notify_die "$gui" "Did not complete previous selection properly"
-				return
-			}
-		}
-
-		# validate variable
-		[ -d "$dbDir/$category/$program" ] || {
-			notify_die "$gui" "Application '$program' does not exist"
-			return
-		}
-
-		# set variable
 		echo "$program" >| "$dbDir/$category/_.current"
 		notify_info "$gui" "Category '$category' defaults to '$program'"
 		;;
@@ -89,42 +55,14 @@ main() {
 
 		local category="$1"
 
-		# ensure variable
-		[ -z "$category" ] && {
-			local userSelectCmd
-			userSelectCmd="$(get_cmd "$gui")"
-
-			ensure_has_dot_current() {
-				while IFS= read -r dir; do
-					if [ -s "$dbDir/$dir/_.current" ]; then
-						echo "$dir"
-					fi
-				done
-			}
-
-			category="$(
-				plumbing_list_dir "$dbDir" \
-				| ensure_has_dot_current \
-				| grep "\S" \
-				| $userSelectCmd
-			)"
-			ifCmdFailed "$?" && {
-				notify_die "$gui" "Did not complete previous selection properly"
-				return
-			}
-
-		}
-
-		# validate variable
-		if [ ! -d "$dbDir/$category" ] || [ ! -s "$dbDir/$category/_.current" ]; then
-			notify_die "$gui" "Application category '$category' does not exist"
-			return
-		fi
+		category="$(util_get_category_filter "$category" "$gui")"
+		ifCmdFailed "$?" && return
 
 		# get variable
 		program="$(<"$dbDir/$category/_.current")"
 
-		# ensure variable
+		# ensure variable (we already use 'ensure_has_dot_current' in
+		# util_get_category_filter; this is another safeguard)
 		[ -z "$program" ] && {
 			notify_die "$gui" "program for '$category' is not set. Please set with 'fox-default set'"
 			return
@@ -147,6 +85,11 @@ main() {
 
 			exec "$program"
 		fi
+		;;
+	get)
+		shift
+
+		local category="$1"
 		;;
 	--help)
 		util_show_help
