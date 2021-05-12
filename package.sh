@@ -1,1 +1,1 @@
-BINS="choose"
+BINS="./choose"
