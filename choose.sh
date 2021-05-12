@@ -93,9 +93,10 @@ main() {
 		# if program file has content, it means
 		# we manually set an execute command. source it
 		if [ -s "$dbDir/$category/$program/launch.sh" ]; then
-			source "$dbDir/$category/$program/launch.sh"
-			die
-			return
+			source "$dbDir/$category/$program/launch.sh" || {
+				die
+				return
+			}
 		# if file does not have content, we raw exec it
 		else
 			# ensure variable is in the environment
