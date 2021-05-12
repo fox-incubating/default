@@ -72,7 +72,7 @@ main() {
 
 		# get variable
 		[ ! -f "$dbDir/$category/_.current" ] && {
-			notify_die "$gui" "Program for '$category' is not set. Please set with 'fox-default set'"
+			notify_die "$gui" "Program for '$category' is not set. Please set with 'choose set'"
 		}
 
 		program="$(<"$dbDir/$category/_.current")"
@@ -80,7 +80,7 @@ main() {
 		# ensure variable (we already use 'ensure_has_dot_current' in
 		# util_get_category_filter; this is another safeguard)
 		[ -z "$program" ] && {
-			notify_die "$gui" "Program for '$category' is not set. Please set with 'fox-default set'"
+			notify_die "$gui" "Program for '$category' is not set. Please set with 'choose set'"
 			return
 		}
 
@@ -119,7 +119,7 @@ main() {
 		# get variable
 		# TODO: cleanup
 		[ ! -f "$dbDir/$category/_.current" ] && [ "$ignoreErrors" = no ] && {
-			notify_die "$gui" "Program for '$category' is not set. Please set with 'fox-default set'"
+			notify_die "$gui" "Program for '$category' is not set. Please set with 'choose set'"
 		}
 
 		program="$(<"$dbDir/$category/_.current")"
@@ -127,7 +127,7 @@ main() {
 		# ensure variable (we already use 'ensure_has_dot_current' in
 		# util_get_category_filter; this is another safeguard)
 		[ -z "$program" ] && [ "$ignoreErrors" = no ] && {
-			notify_die "$gui" "Program for '$category' is not set. Please set with 'fox-default set'"
+			notify_die "$gui" "Program for '$category' is not set. Please set with 'choose set'"
 			return
 		}
 

@@ -2,7 +2,7 @@
 
 System for choosing default applications, programs, and utilities
 
-Like `update-alternatives`, but local to user and more flexible. Requires a database of applications and their defaults at "${XDG_CONFIG_HOME:-$HOME/.config}/fox-defaults/defaults"
+Like `update-alternatives`, but local to user and more flexible. Requires a database of applications and their defaults at "${XDG_CONFIG_HOME:-$HOME/.config}/chooses/defaults"
 
 ## Summary
 
@@ -15,10 +15,10 @@ Like `update-alternatives`, but local to user and more flexible. Requires a data
 ## Installation
 
 ```sh
-git clone https://github.com/eankeen/fox-default
-cd fox-default
+git clone https://github.com/eankeen/choose
+cd choose
 
-./fox-default.sh set
+./choose.sh set
 ```
 
 - CHOOSE_DB_DIR
@@ -46,6 +46,7 @@ cd fox-default
 ## TODO
 
 - 'get' subcommand
-- use fox-default when using fuzzer / filter (dmenu vs rofi -dmenu, etc.)
+- use choose when using fuzzer / filter (dmenu vs rofi -dmenu, etc.)
 - application categories standardizable?
 - new command
+- sourcing pre-exec does does output on --verbose flag (or another)

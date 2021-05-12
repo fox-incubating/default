@@ -106,7 +106,7 @@ util_get_cmd() {
 
 	local cmd="fzf"
 	if [ "$isGui" = "yes" ]; then
-		# TODO: check for fox-default value
+		# TODO: check for choose value
 		if command -v rofi >&/dev/null; then
 			cmd="rofi -dmenu"
 		elif command -v dmenu >&/dev/null; then
