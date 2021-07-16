@@ -2,13 +2,13 @@
 
 
 # -------------------------- run ------------------------- #
-
-trap sigint INT
-sigint() {
-	set +x
-	die 'Received SIGINT'
-}
-
+if [[ "${BASH_SOURCE[0]}" = "${0}" ]]; then
+	trap sigint INT
+	sigint() {
+		set +x
+		die 'Received SIGINT'
+	}
+fi
 
 # -------------------- util functions -------------------- #
 
