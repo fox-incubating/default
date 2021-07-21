@@ -72,7 +72,7 @@ _choose() {
 	if [[ "$i" -eq "$COMP_CWORD" ]]; then
 		local cur="${COMP_WORDS[COMP_CWORD]}"
 		# shellcheck disable=SC2207
-		COMPREPLY=($(compgen -W "set launch get --help --version" -- "$cur"))
+		COMPREPLY=($(compgen -W "set launch print --help --version" -- "$cur"))
 		return
 	fi
 
