@@ -3,13 +3,11 @@
 # async issues with +u when sourcing
 set -Eo pipefail
 
-DIR="$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")"
-
 # ------------------------- start ------------------------ #
-source "$DIR/lib/do.sh"
-source "$DIR/lib/helper.sh"
-source "$DIR/lib/plumbing.sh"
-source "$DIR/lib/util.sh"
+source "$PROGRAM_LIB_DIR/do.sh"
+source "$PROGRAM_LIB_DIR/helper.sh"
+source "$PROGRAM_LIB_DIR/plumbing.sh"
+source "$PROGRAM_LIB_DIR/util.sh"
 
 dbDir="${CHOOSE_DB_DIR:-${XDG_CONFIG_HOME:-$HOME/.config}/choose/db}"
 

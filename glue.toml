@@ -1,0 +1,7 @@
+using = ['Bash']
+
+name = ''
+email = ''
+project = ''
+description = ''
+license = ''
