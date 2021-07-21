@@ -46,6 +46,9 @@ main() {
 		do_launch "$category" "$gui"
 		;;
 	print)
+		local category="${argsCommands[1]}"
+
+		do_print "$category" "$gui"
 		;;
 	esac
 }

@@ -80,3 +80,15 @@ do_launch() {
 		source "$dbDir/$category/post.sh"
 	fi
 }
+
+do_print() {
+	local category="$1"
+
+	program="$(<"$dbDir/$category/_.current")"
+
+	# ensure variable (we already use 'ensure_has_dot_current' in
+	# helper_get_category_filter; this is another safeguard)
+	if [ -z "$program" ]; then
+		log.die "$gui" "Program for '$category' is not set. Please set with 'choose set'"
+	fi
+}
