@@ -6,145 +6,47 @@ set -Eo pipefail
 DIR="$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")"
 
 # ------------------------- start ------------------------ #
-source "$DIR/lib/util.sh"
+source "$DIR/lib/do.sh"
+source "$DIR/lib/helper.sh"
 source "$DIR/lib/plumbing.sh"
+source "$DIR/lib/util.sh"
 
 dbDir="${CHOOSE_DB_DIR:-${XDG_CONFIG_HOME:-$HOME/.config}/choose/db}"
 
 main() {
-	[ -z "$1" ] && {
-		util_show_help
-		notify_die "$gui" 'No subcommand found'
-		return
-	}
+	declare -A args=()
+	declare -a argsCommands=()
 
-	# TODO: cleanup
-	# whether or not we are launching GUI selection interfaces
-	local gui=no
-	local ignoreErrors=no
-	if [ "$1" = "--gui" ] || [ "$2" = "--gui" ]; then
-		gui=yes
-		shift
-	fi
-	if [ "$1" = "--ignore-errors" ] || [ "$2" = "--ignore-errors" ]; then
-		ignoreErrors=yes
-		shift
+	# shellcheck disable=SC1091
+	source bash-args parse "$@" <<-"EOF"
+	@arg launch - (category) Launches the default program in a particular category
+	@arg set - (category) (application) Sets the default program in a particular category
+	@flag [gui] - Whether to open a GUI
+	@flag [help.h] - Show help menu
+	@flag [version.v] - Show version
+	EOF
+
+	if [ -z "${argsCommands[0]}" ]; then
+		printf "%s\n" "$argsHelpText"
+		log.die "$gui" 'No subcommand found'
 	fi
 
-	case "$*" in
-	*--gui*)
-		notify_die "$gui" "Must place '--gui' as first arg"
-		return ;;
-	*--ignore-errors*)
-		notify_die "$gui" "Must place '--ignore-errors' as first arg"
-		return
-	esac
+	local gui="${args[gui]}"
 
-
-	case "$1" in
+	case "${argsCommands[0]}" in
 	set)
-		shift
+		local category="${argsCommands[1]}"
+		local program="${argsCommands[2]}"
 
-		local category="$1"
-		local program="$2"
-
-		category="$(util_get_category "$category" "$gui")"
-		ifCmdFailed "$?" && return
-
-		program="$(util_get_program "$category" "$program" "$gui")"
-		ifCmdFailed "$?" && return
-
-		# source pre-exec
-		if [ -s "$dbDir/$category/set.sh" ]; then
-			source "$dbDir/$category/set.sh"
-		fi
-
-		echo "$program" >| "$dbDir/$category/_.current"
-		notify_info "$gui" "Category '$category' defaults to '$program'"
+		do_set "$category" "$program" "$gui"
 		;;
 	launch)
-		shift
+		local category="${argsCommands[1]}"
 
-		local category="$1"
-
-		category="$(util_get_category_filter "$category" "$gui")"
-		ifCmdFailed "$?" && return
-
-		# get variable
-		[ ! -f "$dbDir/$category/_.current" ] && {
-			notify_die "$gui" "Program for '$category' is not set. Please set with 'choose set'"
-		}
-
-		program="$(<"$dbDir/$category/_.current")"
-
-		# ensure variable (we already use 'ensure_has_dot_current' in
-		# util_get_category_filter; this is another safeguard)
-		[ -z "$program" ] && {
-			notify_die "$gui" "Program for '$category' is not set. Please set with 'choose set'"
-			return
-		}
-
-		# ------------------------ launch ------------------------ #
-		# source pre-exec
-		if [ -s "$dbDir/$category/launch.sh" ]; then
-			source "$dbDir/$category/launch.sh"
-		fi
-
-		# if program file has content, it means
-		# we manually set an execute command. source it
-		if [ -s "$dbDir/$category/$program/launch.sh" ]; then
-			source "$dbDir/$category/$program/launch.sh" || {
-				die
-				return
-			}
-		# if file does not have content, we raw exec it
-		else
-			# ensure variable is in the environment
-			command -v "$program" &>/dev/null || {
-				notify_die "$gui" "Executable '$program' does not exist or is not in the current environment"
-				return
-			}
-
-			exec "$program"
-		fi
+		do_launch "$category" "$gui"
 		;;
-	get)
-		shift
-
-		local category="$1"
-
-		category="$(util_get_category_filter "$category" "$gui")"
-		ifCmdFailed "$?" && return
-
-		# get variable
-		# TODO: cleanup
-		[ ! -f "$dbDir/$category/_.current" ] && [ "$ignoreErrors" = no ] && {
-			notify_die "$gui" "Program for '$category' is not set. Please set with 'choose set'"
-		}
-
-		program="$(<"$dbDir/$category/_.current")"
-
-		# ensure variable (we already use 'ensure_has_dot_current' in
-		# util_get_category_filter; this is another safeguard)
-		[ -z "$program" ] && [ "$ignoreErrors" = no ] && {
-			notify_die "$gui" "Program for '$category' is not set. Please set with 'choose set'"
-			return
-		}
-
-		# source pre-exec
-		if [ -s "$dbDir/$category/get.sh" ]; then
-			source "$dbDir/$category/get.sh"
-		fi
-
-		printf "%s" "$program"
+	print)
 		;;
-	--help)
-		util_show_help
-		;;
-	*)
-		notify_die "$gui" "Subcommand not found"
-		return
-	;;
 	esac
 }
 
