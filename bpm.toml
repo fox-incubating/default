@@ -1,1 +1,1 @@
-binDirs = 'pkg/bin'
+binDirs = [ 'pkg/bin' ]
