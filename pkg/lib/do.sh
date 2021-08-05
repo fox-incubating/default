@@ -17,8 +17,29 @@ do_set() {
 	fi
 	program="$REPLY"
 
+	# -------------------------- set ------------------------- #
+	# Source category pre
+	if [ -f "$dbDir/$category/set-pre.sh" ]; then
+		source "$dbDir/$category/set-pre.sh"
+	fi
+
+	# Source program pre
+	if [ -f "$dbDir/$category/$program/set-pre.sh" ]; then
+		source "$dbDir/$category/$program/set-pre.sh"
+	fi
+
 	# Actually set
 	printf "%s" "$program" >| "$dbDir/$category/_.current"
+
+	# Source program post
+	if [ -f "$dbDir/$category/$program/set-post.sh" ]; then
+		source "$dbDir/$category/$program/set-post.sh"
+	fi
+
+	# Source category post
+	if [ -f "$dbDir/$category/set-post.sh" ]; then
+		source "$dbDir/$category/set-post.sh"
+	fi
 
 	log.info "Category '$category' defaults to '$program'"
 }
@@ -47,13 +68,13 @@ do_launch() {
 
 	# ------------------------ launch ------------------------ #
 	# Source category pre
-	if [ -f "$dbDir/$category/pre.sh" ]; then
-		source "$dbDir/$category/pre.sh"
+	if [ -f "$dbDir/$category/launch-pre.sh" ]; then
+		source "$dbDir/$category/launch-pre.sh"
 	fi
 
 	# Source program pre
-	if [ -f "$dbDir/$category/$program/pre.sh" ]; then
-		source "$dbDir/$category/$program/pre.sh"
+	if [ -f "$dbDir/$category/$program/launch-pre.sh" ]; then
+		source "$dbDir/$category/$program/launch-pre.sh"
 	fi
 
 	# Source launch if it exists. If otherwise, infer
@@ -63,21 +84,17 @@ do_launch() {
 			log.die "$gui" "Source failed"
 		fi
 	else
-		if ! command -v "$program" &>/dev/null; then
-			log.die "$gui" "Executable '$program' does not exist or is not in the current environment"
-		fi
-
-		exec "$program"
+		log.die "$gui" "launch.sh for program '$program' does not exist"
 	fi
 
 	# Source program post
-	if [ -f "$dbDir/$category/$program/post.sh" ]; then
-		source "$dbDir/$category/$program/post.sh"
+	if [ -f "$dbDir/$category/$program/launch-post.sh" ]; then
+		source "$dbDir/$category/$program/launch-post.sh"
 	fi
 
 	# Source category post
-	if [ -f "$dbDir/$category/post.sh" ]; then
-		source "$dbDir/$category/post.sh"
+	if [ -f "$dbDir/$category/launch-post.sh" ]; then
+		source "$dbDir/$category/launch-post.sh"
 	fi
 }
 

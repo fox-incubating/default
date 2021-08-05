@@ -48,6 +48,8 @@ main() {
 
 		do_print "$category" "$gui"
 		;;
+	*)
+		log.die "Subcommand '${argsCommands[0]}' not found"
 	esac
 }
 
