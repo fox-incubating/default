@@ -20,12 +20,12 @@ do_set() {
 	# -------------------------- set ------------------------- #
 	# Source category pre
 	if [ -f "$dbDir/$category/set-pre.sh" ]; then
-		source "$dbDir/$category/set-pre.sh" "$dbDir/$category" "$program"
+		sh "$dbDir/$category/set-pre.sh" "$dbDir/$category" "$program"
 	fi
 
 	# Source program pre
 	if [ -f "$dbDir/$category/$program/set-pre.sh" ]; then
-		source "$dbDir/$category/$program/set-pre.sh" "$dbDir/$category" "$program"
+		sh "$dbDir/$category/$program/set-pre.sh" "$dbDir/$category" "$program"
 	fi
 
 	# Actually set
@@ -33,12 +33,12 @@ do_set() {
 
 	# Source program post
 	if [ -f "$dbDir/$category/$program/set-post.sh" ]; then
-		source "$dbDir/$category/$program/set-post.sh" "$dbDir/$category" "$program"
+		sh "$dbDir/$category/$program/set-post.sh" "$dbDir/$category" "$program"
 	fi
 
 	# Source category post
 	if [ -f "$dbDir/$category/set-post.sh" ]; then
-		source "$dbDir/$category/set-post.sh" "$dbDir/$category" "$program"
+		sh "$dbDir/$category/set-post.sh" "$dbDir/$category" "$program"
 	fi
 
 	log.info "Category '$category' defaults to '$program'"
@@ -69,18 +69,18 @@ do_launch() {
 	# ------------------------ launch ------------------------ #
 	# Source category pre
 	if [ -f "$dbDir/$category/launch-pre.sh" ]; then
-		source "$dbDir/$category/launch-pre.sh" "$dbDir/$category" "$program"
+		sh "$dbDir/$category/launch-pre.sh" "$dbDir/$category" "$program"
 	fi
 
 	# Source program pre
 	if [ -f "$dbDir/$category/$program/launch-pre.sh" ]; then
-		source "$dbDir/$category/$program/launch-pre.sh" "$dbDir/$category" "$program"
+		sh "$dbDir/$category/$program/launch-pre.sh" "$dbDir/$category" "$program"
 	fi
 
 	# Source launch if it exists. If otherwise, infer
 	# the launch command from the program name
 	if [ -f "$dbDir/$category/$program/launch.sh" ]; then
-		if ! source "$dbDir/$category/$program/launch.sh" "$dbDir/$category" "$program"; then
+		if ! sh "$dbDir/$category/$program/launch.sh" "$dbDir/$category" "$program"; then
 			log.die "$gui" "Source failed"
 		fi
 	else
@@ -89,12 +89,12 @@ do_launch() {
 
 	# Source program post
 	if [ -f "$dbDir/$category/$program/launch-post.sh" ]; then
-		source "$dbDir/$category/$program/launch-post.sh" "$dbDir/$category" "$program"
+		sh "$dbDir/$category/$program/launch-post.sh" "$dbDir/$category" "$program"
 	fi
 
 	# Source category post
 	if [ -f "$dbDir/$category/launch-post.sh" ]; then
-		source "$dbDir/$category/launch-post.sh" "$dbDir/$category" "$program"
+		sh "$dbDir/$category/launch-post.sh" "$dbDir/$category" "$program"
 	fi
 }
 
