@@ -26,13 +26,13 @@ helper_get_category() {
 		helper_get_cmd "$gui"
 		local cmd="$REPLY"
 
-		if ! category="$(plumbing_list_dir "$dbDir" | $cmd)"; then
+		if ! category="$(plumbing_list_dir "$db_dir" | $cmd)"; then
 			log.die "$gui" "Did not complete previous selection properly"
 		fi
 	fi
 
 	# validate
-	if [ ! -d "$dbDir/$category" ]; then
+	if [ ! -d "$db_dir/$category" ]; then
 		log.die "$gui" "Application category '$category' does not exist"
 	fi
 
@@ -52,14 +52,14 @@ helper_get_category_filter() {
 
 		ensure_has_dot_current() {
 			while IFS= read -r dir; do
-				if [ -f "$dbDir/$dir/_.current" ]; then
+				if [ -f "$db_dir/$dir/_.current" ]; then
 					echo "$dir"
 				fi
 			done
 		}
 
 		if ! category="$(
-			plumbing_list_dir "$dbDir" \
+			plumbing_list_dir "$db_dir" \
 			| ensure_has_dot_current \
 			| grep "\S" \
 			| $userSelectCmd
@@ -69,9 +69,9 @@ helper_get_category_filter() {
 	fi
 
 	# validate
-	if [ ! -d "$dbDir/$category" ]; then
+	if [ ! -d "$db_dir/$category" ]; then
 		log.die "$gui" "Application category '$category' does not exist"
-	elif [ ! -s "$dbDir/$category/_.current" ]; then
+	elif [ ! -s "$db_dir/$category/_.current" ]; then
 		log.die "$gui" "Application category '$category' does not have a default program associated with it"
 	fi
 
@@ -90,7 +90,7 @@ helper_get_program() {
 		userSelectCmd="$REPLY"
 
 		if ! program="$(
-			plumbing_list_dir "$dbDir/$category" \
+			plumbing_list_dir "$db_dir/$category" \
 			| grep -v "_.current" \
 			| $userSelectCmd
 		)"; then
@@ -99,7 +99,7 @@ helper_get_program() {
 	fi
 
 	# validate variable
-	if [ ! -d "$dbDir/$category/$program" ]; then
+	if [ ! -d "$db_dir/$category/$program" ]; then
 		log.die "$gui" "Application '$program' does not exist"
 	fi
 

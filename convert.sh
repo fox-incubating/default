@@ -7,9 +7,9 @@ set -e
 shopt -s nullglob extglob globstar
 
 main() {
-	local dbDir="${CHOOSE_DB_DIR:-${XDG_CONFIG_HOME:-$HOME/.config}/choose/db}"
+	local db_dir="${CHOOSE_DB_DIR:-${XDG_CONFIG_HOME:-$HOME/.config}/choose/db}"
 
-	for categoryDir in "$dbDir"/*; do
+	for categoryDir in "$db_dir"/*; do
 		if [ ! -d "$categoryDir" ]; then
 			printf "%s\n" "Warning: Category dir '$categoryDir' is not a directory. Skipping"
 			continue

@@ -19,26 +19,26 @@ do_set() {
 
 	# -------------------------- set ------------------------- #
 	# Source category pre
-	if [ -f "$dbDir/$category/set-pre.sh" ]; then
-		sh "$dbDir/$category/set-pre.sh" "$dbDir/$category" "$program"
+	if [ -f "$db_dir/$category/set-pre.sh" ]; then
+		sh "$db_dir/$category/set-pre.sh" "$db_dir/$category" "$program"
 	fi
 
 	# Source program pre
-	if [ -f "$dbDir/$category/$program/set-pre.sh" ]; then
-		sh "$dbDir/$category/$program/set-pre.sh" "$dbDir/$category" "$program"
+	if [ -f "$db_dir/$category/$program/set-pre.sh" ]; then
+		sh "$db_dir/$category/$program/set-pre.sh" "$db_dir/$category" "$program"
 	fi
 
 	# Actually set
-	printf "%s" "$program" >| "$dbDir/$category/_.current"
+	printf "%s" "$program" >| "$db_dir/$category/_.current"
 
 	# Source program post
-	if [ -f "$dbDir/$category/$program/set-post.sh" ]; then
-		sh "$dbDir/$category/$program/set-post.sh" "$dbDir/$category" "$program"
+	if [ -f "$db_dir/$category/$program/set-post.sh" ]; then
+		sh "$db_dir/$category/$program/set-post.sh" "$db_dir/$category" "$program"
 	fi
 
 	# Source category post
-	if [ -f "$dbDir/$category/set-post.sh" ]; then
-		sh "$dbDir/$category/set-post.sh" "$dbDir/$category" "$program"
+	if [ -f "$db_dir/$category/set-post.sh" ]; then
+		sh "$db_dir/$category/set-post.sh" "$db_dir/$category" "$program"
 	fi
 
 	log.info "Category '$category' defaults to '$program'"
@@ -54,11 +54,11 @@ do_launch() {
 	category="$REPLY"
 
 	# Check to ensure category is set
-	if [ ! -f "$dbDir/$category/_.current" ]; then
+	if [ ! -f "$db_dir/$category/_.current" ]; then
 		log.die "$gui" "Program for '$category' is not set. Please set with 'choose set'"
 	fi
 
-	program="$(<"$dbDir/$category/_.current")"
+	program="$(<"$db_dir/$category/_.current")"
 
 	# ensure variable (we already use 'ensure_has_dot_current' in
 	# helper_get_category_filter; this is another safeguard)
@@ -68,19 +68,19 @@ do_launch() {
 
 	# ------------------------ launch ------------------------ #
 	# Source category pre
-	if [ -f "$dbDir/$category/launch-pre.sh" ]; then
-		sh "$dbDir/$category/launch-pre.sh" "$dbDir/$category" "$program"
+	if [ -f "$db_dir/$category/launch-pre.sh" ]; then
+		sh "$db_dir/$category/launch-pre.sh" "$db_dir/$category" "$program"
 	fi
 
 	# Source program pre
-	if [ -f "$dbDir/$category/$program/launch-pre.sh" ]; then
-		sh "$dbDir/$category/$program/launch-pre.sh" "$dbDir/$category" "$program"
+	if [ -f "$db_dir/$category/$program/launch-pre.sh" ]; then
+		sh "$db_dir/$category/$program/launch-pre.sh" "$db_dir/$category" "$program"
 	fi
 
 	# Source launch if it exists. If otherwise, infer
 	# the launch command from the program name
-	if [ -f "$dbDir/$category/$program/launch.sh" ]; then
-		if ! sh "$dbDir/$category/$program/launch.sh" "$dbDir/$category" "$program"; then
+	if [ -f "$db_dir/$category/$program/launch.sh" ]; then
+		if ! sh "$db_dir/$category/$program/launch.sh" "$db_dir/$category" "$program"; then
 			log.die "$gui" "Source failed"
 		fi
 	else
@@ -88,20 +88,20 @@ do_launch() {
 	fi
 
 	# Source program post
-	if [ -f "$dbDir/$category/$program/launch-post.sh" ]; then
-		sh "$dbDir/$category/$program/launch-post.sh" "$dbDir/$category" "$program"
+	if [ -f "$db_dir/$category/$program/launch-post.sh" ]; then
+		sh "$db_dir/$category/$program/launch-post.sh" "$db_dir/$category" "$program"
 	fi
 
 	# Source category post
-	if [ -f "$dbDir/$category/launch-post.sh" ]; then
-		sh "$dbDir/$category/launch-post.sh" "$dbDir/$category" "$program"
+	if [ -f "$db_dir/$category/launch-post.sh" ]; then
+		sh "$db_dir/$category/launch-post.sh" "$db_dir/$category" "$program"
 	fi
 }
 
 do_print() {
 	local category="$1"
 
-	program="$(<"$dbDir/$category/_.current")"
+	program="$(<"$db_dir/$category/_.current")"
 
 	# ensure variable (we already use 'ensure_has_dot_current' in
 	# helper_get_category_filter; this is another safeguard)

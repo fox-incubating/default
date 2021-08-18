@@ -9,7 +9,7 @@ source "$PROGRAM_LIB_DIR/helper.sh"
 source "$PROGRAM_LIB_DIR/plumbing.sh"
 source "$PROGRAM_LIB_DIR/util.sh"
 
-dbDir="${CHOOSE_DB_DIR:-${XDG_CONFIG_HOME:-$HOME/.config}/choose/db}"
+db_dir="${CHOOSE_DB_DIR:-${XDG_CONFIG_HOME:-$HOME/.config}/choose/db}"
 
 main() {
 	declare -A args=()
