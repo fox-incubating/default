@@ -8,6 +8,7 @@ source "$PROGRAM_LIB_DIR/do.sh"
 source "$PROGRAM_LIB_DIR/helper.sh"
 source "$PROGRAM_LIB_DIR/plumbing.sh"
 source "$PROGRAM_LIB_DIR/util.sh"
+PATH="$PROGRAM_LIB_DIR/../../bpm_packages/bin:$PATH" # TODO
 
 db_dir="${CHOOSE_DB_DIR:-${XDG_CONFIG_HOME:-$HOME/.config}/choose/db}"
 
