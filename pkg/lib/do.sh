@@ -20,12 +20,16 @@ do_set() {
 	# -------------------------- set ------------------------- #
 	# Source category pre
 	if [ -f "$db_dir/$category/set-pre.sh" ]; then
-		sh "$db_dir/$category/set-pre.sh" "$db_dir/$category" "$program"
+		if ! sh "$db_dir/$category/set-pre.sh" "$db_dir/$category" "$program"; then
+			return 1
+		fi
 	fi
 
 	# Source program pre
 	if [ -f "$db_dir/$category/$program/set-pre.sh" ]; then
-		sh "$db_dir/$category/$program/set-pre.sh" "$db_dir/$category" "$program"
+		if ! sh "$db_dir/$category/$program/set-pre.sh" "$db_dir/$category" "$program"; then
+			return 1
+		fi
 	fi
 
 	# Actually set
@@ -33,12 +37,16 @@ do_set() {
 
 	# Source program post
 	if [ -f "$db_dir/$category/$program/set-post.sh" ]; then
-		sh "$db_dir/$category/$program/set-post.sh" "$db_dir/$category" "$program"
+		if ! sh "$db_dir/$category/$program/set-post.sh" "$db_dir/$category" "$program"; then
+			return 1
+		fi
 	fi
 
 	# Source category post
 	if [ -f "$db_dir/$category/set-post.sh" ]; then
-		sh "$db_dir/$category/set-post.sh" "$db_dir/$category" "$program"
+		if ! sh "$db_dir/$category/set-post.sh" "$db_dir/$category" "$program"; then
+			return 1
+		fi
 	fi
 
 	log.info "Category '$category' defaults to '$program'"
@@ -69,19 +77,23 @@ do_launch() {
 	# ------------------------ launch ------------------------ #
 	# Source category pre
 	if [ -f "$db_dir/$category/launch-pre.sh" ]; then
-		sh "$db_dir/$category/launch-pre.sh" "$db_dir/$category" "$program"
+		if ! sh "$db_dir/$category/launch-pre.sh" "$db_dir/$category" "$program"; then
+			return 1
+		fi
 	fi
 
 	# Source program pre
 	if [ -f "$db_dir/$category/$program/launch-pre.sh" ]; then
-		sh "$db_dir/$category/$program/launch-pre.sh" "$db_dir/$category" "$program"
+		if ! sh "$db_dir/$category/$program/launch-pre.sh" "$db_dir/$category" "$program"; then
+			return 1
+		fi
 	fi
 
 	# Source launch if it exists. If otherwise, infer
 	# the launch command from the program name
 	if [ -f "$db_dir/$category/$program/launch.sh" ]; then
 		if ! sh "$db_dir/$category/$program/launch.sh" "$db_dir/$category" "$program"; then
-			log.die "$gui" "Source failed"
+			log.die "$gui" "Source failed" # TODO: fix error message
 		fi
 	else
 		log.die "$gui" "launch.sh for program '$program' does not exist"
@@ -89,12 +101,16 @@ do_launch() {
 
 	# Source program post
 	if [ -f "$db_dir/$category/$program/launch-post.sh" ]; then
-		sh "$db_dir/$category/$program/launch-post.sh" "$db_dir/$category" "$program"
+		if ! sh "$db_dir/$category/$program/launch-post.sh" "$db_dir/$category" "$program"; then
+			return 1
+		fi
 	fi
 
 	# Source category post
 	if [ -f "$db_dir/$category/launch-post.sh" ]; then
-		sh "$db_dir/$category/launch-post.sh" "$db_dir/$category" "$program"
+		if ! sh "$db_dir/$category/launch-post.sh" "$db_dir/$category" "$program"; then
+			return 1
+		fi
 	fi
 }
 
