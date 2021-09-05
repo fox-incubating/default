@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # async issues with +u when sourcing
-set -Eo pipefail
+set -Eeo pipefail
 
 # ------------------------- start ------------------------ #
 source "$PROGRAM_LIB_DIR/do.sh"
