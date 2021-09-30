@@ -1,2 +1,0 @@
-binDirs = ['pkg/bin']
-dependencies = ['hyperupcall/bash-args@v0.8.0']
