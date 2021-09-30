@@ -3,21 +3,27 @@
 # async issues with +u when sourcing
 set -Eeo pipefail
 
+eval "$(basalt-package-init)"; basalt.package-init
+basalt.package-load
+
 # ------------------------- start ------------------------ #
 source "$PROGRAM_LIB_DIR/do.sh"
 source "$PROGRAM_LIB_DIR/helper.sh"
 source "$PROGRAM_LIB_DIR/plumbing.sh"
 source "$PROGRAM_LIB_DIR/util.sh"
-PATH="$PROGRAM_LIB_DIR/../../bpm_packages/bin:$PATH" # TODO
+
+for f in "$PROGRAM_LIB_DIR"/../../basalt_packages/packages/github.com/hyperupcall/bash-args@*/pkg/{lib/util,source}/*.sh; do
+	source "$f"
+done
 
 db_dir="${CHOOSE_DB_DIR:-${XDG_CONFIG_HOME:-$HOME/.config}/choose/db}"
 
-main() {
+choose.main() {
 	declare -A args=()
 	declare -a argsCommands=()
 
 	# shellcheck disable=SC1091
-	source bash-args parse "$@" <<-"EOF"
+	bash-args parse "$@" <<-"EOF"
 	@arg launch - (category) Launches the default program in a particular category
 	@arg set - (category) (application) Sets the default program in a particular category
 	@flag [gui] - Whether to open a GUI
@@ -53,5 +59,3 @@ main() {
 		log.die "Subcommand '${argsCommands[0]}' not found"
 	esac
 }
-
-main "$@"

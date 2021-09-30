@@ -6,5 +6,5 @@ authors = ['Edwin Kofler <edwin@kofler.dev>']
 description = ''
 
 [run]
-dependencies = ['hyperupcall/bash-args@v0.8.0']
+dependencies = ['hyperupcall/bash-args@e5466e6c3998790ebd99768cf0f910e161b84a95']
 binDirs = ['pkg/bin']
