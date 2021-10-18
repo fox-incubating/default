@@ -6,5 +6,15 @@ authors = ['Edwin Kofler <edwin@kofler.dev>']
 description = ''
 
 [run]
-dependencies = ['hyperupcall/bash-args@e5466e6c3998790ebd99768cf0f910e161b84a95']
+dependencies = ['https://github.com/hyperupcall/bash-args.git@v0.9.0']
+sourceDirs = ['pkg/lib']
+builtinDirs = []
 binDirs = ['pkg/bin']
+completionDirs = []
+manDirs = []
+
+[run.shellEnvironment]
+
+[run.setOptions]
+
+[run.shoptOptions]

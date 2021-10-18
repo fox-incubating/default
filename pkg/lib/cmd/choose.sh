@@ -6,16 +6,6 @@ set -Eeo pipefail
 eval "$(basalt-package-init)"; basalt.package-init
 basalt.package-load
 
-# ------------------------- start ------------------------ #
-source "$PROGRAM_LIB_DIR/do.sh"
-source "$PROGRAM_LIB_DIR/helper.sh"
-source "$PROGRAM_LIB_DIR/plumbing.sh"
-source "$PROGRAM_LIB_DIR/util.sh"
-
-for f in "$PROGRAM_LIB_DIR"/../../basalt_packages/packages/github.com/hyperupcall/bash-args@*/pkg/{lib/util,source}/*.sh; do
-	source "$f"
-done
-
 db_dir="${CHOOSE_DB_DIR:-${XDG_CONFIG_HOME:-$HOME/.config}/choose/db}"
 
 choose.main() {
