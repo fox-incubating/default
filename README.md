@@ -2,7 +2,7 @@
 
 System for choosing default applications, programs, and utilities
 
-Like `update-alternatives`, but local to user and more flexible. Requires a database of applications and their defaults at "${XDG_CONFIG_HOME:-$HOME/.config}/chooses/defaults"
+Like `update-alternatives`, but local to user and more flexible. Requires a database of applications and their defaults at `"${XDG_CONFIG_HOME:-$HOME/.config}/chooses/defaults"`
 
 ## Summary
 
@@ -14,18 +14,20 @@ Like `update-alternatives`, but local to user and more flexible. Requires a data
 
 ## Installation
 
-```sh
-git clone https://github.com/eankeen/choose
-cd choose
+Use [Basalt](https://github.com/hyperupcall/basalt), a Bash package manager, to install this project globally
 
-./choose.sh set
+```sh
+basalt global add hyperupcall/choose
 ```
+
+## Environment Variables
 
 - CHOOSE_DB_DIR
   - by default at `$XDG_CONFIG_HOME/choose/db`
 
-# Folder Structure
+## Folder Structure
 
+The author's config can be found [here](https://github.com/hyperupcall/dots/tree/main/user/.config/choose/db)
 - db
 
   - terminal-emulator
