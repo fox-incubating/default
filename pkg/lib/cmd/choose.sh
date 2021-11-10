@@ -8,7 +8,7 @@ basalt.package-load
 
 db_dir="${CHOOSE_DB_DIR:-${XDG_CONFIG_HOME:-$HOME/.config}/choose/db}"
 
-choose.main() {
+main.choose() {
 	declare -A args=()
 	declare -a argsCommands=()
 

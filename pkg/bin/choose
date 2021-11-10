@@ -3,5 +3,5 @@
 eval "$(basalt-package-init)"; basalt.package-init
 basalt.package-load
 
-source "$BASALT_PACKAGE_PATH/pkg/lib/cmd/choose.sh"
-choose.main "$@"
+source "$BASALT_PACKAGE_DIR/pkg/lib/cmd/choose.sh"
+main.choose "$@"
