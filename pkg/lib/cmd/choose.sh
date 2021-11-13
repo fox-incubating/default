@@ -3,12 +3,9 @@
 # async issues with +u when sourcing
 set -Eeo pipefail
 
-eval "$(basalt-package-init)"; basalt.package-init
-basalt.package-load
-
 db_dir="${CHOOSE_DB_DIR:-${XDG_CONFIG_HOME:-$HOME/.config}/choose/db}"
 
-choose.main() {
+main.choose() {
 	declare -A args=()
 	declare -a argsCommands=()
 
