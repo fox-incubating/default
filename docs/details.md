@@ -30,3 +30,8 @@ db
    - xmobar/
      - launch.sh
 ```
+
+## Environment Variables
+
+- CHOOSE_DB_DIR
+  - by default at `$XDG_CONFIG_HOME/choose/db`

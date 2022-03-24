@@ -2,15 +2,29 @@
 
 System for choosing default applications, programs, and utilities
 
+## Use Cases
+
 Like `update-alternatives`, but local to user and more flexible. Requires a database of applications and their defaults at `"${XDG_CONFIG_HOME:-$HOME/.config}/chooses/defaults"`
 
-## Summary
+1. Launch with file
 
-- Default application manager
-  - Double click on file / launch with xdg-open, we control that
-    - Abstract image/png, image/jpeg etc. behind 'image-viewer'. associate with single app at a time
-- Default application exec
-  - Execute command associated with utility (ex. 'image-viewer's)
+Control which applications are selected when opening a file. This works irrespective of the desktop environment. `xdg-open` falls flat because it doesn't work with directories. Furthermore, different applications can be configured to work in a different context (X, Terminal emulator, Linux console).
+
+Since these are just shell scripts, arbitrary arguments should be supported, like `--column` and `--row` for example, if using a text editor.
+
+2. Launch without file
+
+The current 'Browser' or 'Image Viewer' can be launched. Again, this is intended to work across distributions and user interfaces.
+
+See more info in [details.md](./docs/details.md)
+
+## Roadmap
+
+- 'get' subcommand
+- use choose when using fuzzer / filter (dmenu vs rofi -dmenu, etc.)
+- application categories standardizable?
+- new command
+- sourcing pre-exec does does output on --verbose flag (or another)
 
 ## Installation
 
@@ -19,36 +33,3 @@ Use [Basalt](https://github.com/hyperupcall/basalt), a Bash package manager, to 
 ```sh
 basalt global add hyperupcall/choose
 ```
-
-## Environment Variables
-
-- CHOOSE_DB_DIR
-  - by default at `$XDG_CONFIG_HOME/choose/db`
-
-## Folder Structure
-
-The author's config can be found [here](https://github.com/hyperupcall/dots/tree/main/user/.config/choose/db)
-- db
-
-  - terminal-emulator
-
-    - alacritty
-    - kitty
-      - launch.sh
-      - set.sh
-      - get.sh
-    - termite
-
-    - launch.sh
-    - set.sh
-    - get.sh
-
-  - image-viewer
-
-## TODO
-
-- 'get' subcommand
-- use choose when using fuzzer / filter (dmenu vs rofi -dmenu, etc.)
-- application categories standardizable?
-- new command
-- sourcing pre-exec does does output on --verbose flag (or another)
