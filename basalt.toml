@@ -7,7 +7,7 @@ authors = ['Edwin Kofler <edwin@kofler.dev>']
 description = 'System for choosing default applications, programs, and utilities'
 
 [run]
-dependencies = ['https://github.com/hyperupcall/bash-args.git@v0.10.0']
+dependencies = ['https://github.com/hyperupcall/bash-args@v0.10.0', 'https://github.com/hyperupcall/bash-core.git@v0.6.0']
 sourceDirs = ['pkg/src']
 builtinDirs = []
 binDirs = ['pkg/bin']
@@ -17,5 +17,9 @@ manDirs = []
 [run.shellEnvironment]
 
 [run.setOptions]
+errexit = 'on'
+errfail = 'on'
+pipefail = 'on'
 
 [run.shoptOptions]
+shift_verbose = 'on'
