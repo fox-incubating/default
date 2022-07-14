@@ -30,17 +30,20 @@ main.choose() {
 		local category="${argsCommands[1]}"
 		local program="${argsCommands[2]}"
 
-		do_set "$category" "$program" "$gui"
+		source "$BASALT_PACKAGE_DIR/pkg/commands/choose-set.sh"
+		choose-set "$category" "$program" "$gui"
 		;;
 	launch)
 		local category="${argsCommands[1]}"
 
-		do_launch "$category" "$gui"
+		source "$BASALT_PACKAGE_DIR/pkg/commands/choose-launch.sh"
+		choose-launch "$category" "$gui"
 		;;
 	print)
 		local category="${argsCommands[1]}"
 
-		do_print "$category" "$gui"
+		source "$BASALT_PACKAGE_DIR/pkg/commands/choose-print.sh"
+		choose-print "$category" "$gui"
 		;;
 	*)
 		log.die "Subcommand '${argsCommands[0]}' not found"
