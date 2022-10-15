@@ -1,5 +1,5 @@
 # shellcheck shell=bash
 
 task.run() {
-	./pkg/bin/choose "$@"
+	./target/debug/choose "$@"
 }
