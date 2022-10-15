@@ -1,6 +1,6 @@
 [project]
-ecosystem = 'basalt'
-form = 'unknown'
+ecosystem = 'rust'
+form = 'app'
 for = 'me'
 status = 'experimental'
 
