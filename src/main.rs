@@ -50,6 +50,18 @@ fn main() {
 	match cli.action {
 		Action::Launch { category } => {
 			match category.as_str() {
+				"application-launcher" => {
+
+				},
+				"file-manager" => {
+
+				},
+				"image-viewer" => {
+
+				},
+				"image-editor" => {
+
+				},
 				"shell-prompt-bash" => {
 					let args = ["starship", "init", "bash", "--print-full-init"];
 					run(args.as_slice());

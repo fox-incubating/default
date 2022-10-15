@@ -1,6 +1,8 @@
-# fox-choose
+# choose
 
 System for choosing default applications, programs, and utilities
+
+The default application selector to rule them all
 
 ## Use Cases
 
@@ -22,14 +24,18 @@ See more info in [details.md](./docs/details.md)
 
 - 'get' subcommand
 - use choose when using fuzzer / filter (dmenu vs rofi -dmenu, etc.)
-- application categories standardizable?
-- new command
 - sourcing pre-exec does does output on --verbose flag (or another)
+- GUI selector (select via GUI if there are multiple options), optional
+- doctor command to ensure that git config attributes, ranger attributes, etc. are all valid and point to choose properly
+- before launch dialog, have UI where can download the application with help of (woof?)
 
-## Installation
+## Application / Category Attributions
 
-Use [Basalt](https://github.com/hyperupcall/basalt), a Bash package manager, to install this project globally
-
-```sh
-basalt global add hyperupcall/choose
-```
+- cli vs tui vs gui
+- use on conditions (only X11, wayland, etc. have fallback (ordering))
+- launching vs shell (interactive, non-interactive), DE (.desktop, etc.), tty vs ptty etc.
+- an editor vs viewer
+- ones meant to generalize across application vs choosing a specific thing (without last common denominator cli argument flags, etc. compatability)
+  - capability based?
+- printing to stdout, running a blocking application, running a non-blocking application, exec'ing into a new process, and running a daemon
+- execution helpers (if it requires a terminal, must wrap it in terminal invocation)
