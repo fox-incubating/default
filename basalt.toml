@@ -2,7 +2,7 @@
 type = 'bash'
 name = 'choose'
 slug = 'choose'
-version = '0.2.0'
+version = '0.3.0'
 authors = ['Edwin Kofler <edwin@kofler.dev>']
 description = 'System for choosing default applications, programs, and utilities'
 
