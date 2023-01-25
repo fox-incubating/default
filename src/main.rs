@@ -1,3 +1,5 @@
+use std::{fs, path::PathBuf};
+
 use clap::Parser;
 use cli::{Action, Args};
 
@@ -27,7 +29,7 @@ fn main() {
 						.choices
 						.shell_prompt_bash
 						.unwrap_or(String::from("starship"));
-					util::launch("shell-prompt-bash", choice);
+					util::run("shell-prompt-bash", choice.as_str(), "launch");
 				}
 				"shell-prompt-zsh" => {
 					let _args = vec!["starship", "init", "zsh", "--print-full-init"];
@@ -63,6 +65,27 @@ fn main() {
 			util::save_data(&data);
 		}
 		Action::Get { category: _ } => {}
+		Action::List { category } => {
+			let list = |dir: PathBuf| {
+				for entry in fs::read_dir(&dir)
+					.expect(format!("Directory does not exist: {}", dir.to_str().unwrap()).as_str())
+				{
+					let path = entry.unwrap().path();
+					let basename = path.file_name().unwrap();
+
+					println!("{}", basename.to_str().unwrap());
+				}
+			};
+
+			let choose_dir = util::get_choose_dir();
+			if let Some(category) = category {
+				let dir = choose_dir.join("choices").join(category);
+				list(dir);
+			} else {
+				let dir = choose_dir.join("choices");
+				list(dir);
+			}
+		}
 		Action::Install { category, choice } => {
 			util::run(category.as_str(), choice.as_str(), "install")
 		}

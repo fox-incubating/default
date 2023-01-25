@@ -18,6 +18,7 @@ pub enum Action {
 	Launch { category: String },
 	Set { category: String, choice: String },
 	Get { category: String },
+	List { category: Option<String> },
 	Install { category: String, choice: String },
 	Uninstall { category: String, choice: String },
 	Test { category: String, choice: String },
