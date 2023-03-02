@@ -1,5 +1,5 @@
 [package]
-name = "choose"
+name = "defaultmgr"
 description = "System for choosing default applications, programs, and utilities"
 license = "MPL-2.0"
 homepage = "https://github.com/hyperupcall/choose"
