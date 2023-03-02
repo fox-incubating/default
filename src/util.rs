@@ -1,15 +1,16 @@
-use std::process::exit;
 use std::str;
 use std::{env, fs, path::PathBuf, process::Command};
 
 use serde::{Deserialize, Serialize};
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Debug)]
 pub struct Choices {
 	pub shell_prompt_bash: Option<String>,
+	pub shell_prompt_zsh: Option<String>,
+	pub git_diff: Option<String>,
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Debug)]
 pub struct Data {
 	pub choices: Choices,
 }
@@ -31,7 +32,7 @@ pub fn run(category: &str, choice: &str, action: &str) {
 		.unwrap();
 
 	let code = exit_status.code().unwrap();
-	exit(code);
+	// println!("code: {}", code);
 }
 
 pub fn get_data() -> Data {
@@ -63,4 +64,21 @@ pub fn get_choose_dir() -> PathBuf {
 	};
 
 	dotfiles_dir.join("choose")
+}
+
+pub fn run_command(command: Vec<&str>) -> bool {
+	let output = Command::new(&command[0])
+		.args(&command[1..])
+		.output()
+		.unwrap();
+
+	output.status.success()
+}
+
+pub fn is_command_installed(command_name: &str) -> bool {
+	run_command(vec![
+		"bash",
+		"-c",
+		format!("command -v {}", command_name).as_str(),
+	 ])
 }
