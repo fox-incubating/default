@@ -1,8 +1,10 @@
-# defaultmgr
+# default
 
 System for choosing default applications, programs, and utilities
 
 ---
+
+TODO: generate executables for fast exec
 
 ## Use Cases
 
@@ -40,9 +42,8 @@ See more info in [details.md](./docs/details.md)
 - printing to stdout, running a blocking application, running a non-blocking application, exec'ing into a new process, and running a daemon
 - execution helpers (if it requires a terminal, must wrap it in terminal invocation)
 
-# Installation
+## Installation
+
 ```sh
 cargo install exa
 ```
-
-

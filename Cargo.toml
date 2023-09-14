@@ -2,9 +2,13 @@
 name = "defaultmgr"
 description = "System for choosing default applications, programs, and utilities"
 license = "MPL-2.0"
-homepage = "https://github.com/hyperupcall/defaultmgr"
+homepage = "https://github.com/hyperupcall/default"
 version = "0.4.0"
 edition = "2021"
+
+[[bin]]
+path = "src/main.rs"
+name = "default"
 
 [dependencies]
 clap = { version = "4.0.15", features = ["derive"] }
