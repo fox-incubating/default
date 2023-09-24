@@ -3,7 +3,7 @@ name = "fox-default"
 description = "Default application manager."
 license = "MPL-2.0"
 homepage = "https://github.com/fox-managers/default"
-version = "0.6.0"
+version = "0.6.1"
 edition = "2021"
 
 [[bin]]
