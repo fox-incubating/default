@@ -36,6 +36,27 @@ pub fn run(category: &str, choice: &str, action: &str) {
 	exit(code);
 }
 
+pub fn assert_category(category: &str) -> bool {
+	let dir = get_main_dir().join("categories").join(category);
+	if !dir.exists() {
+		eprintln!("Category does not exist: {}", category);
+		exit(1);
+	}
+	true
+}
+
+pub fn assert_choice(category: &str, choice: &str) -> bool {
+	let dir = get_main_dir()
+		.join("categories")
+		.join(category)
+		.join(format!("{}.sh", choice));
+	if !dir.exists() {
+		eprintln!("Choice does not exist: {}", choice);
+		exit(1);
+	}
+	true
+}
+
 pub fn get_default_choice(category: &str) -> String {
 	let data = get_data();
 	if data.categories.categories.get(category.clone()).is_some() {

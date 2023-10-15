@@ -24,9 +24,16 @@ fn main() {
 			util::run(&category, chosen.as_str(), "launch");
 		}
 		Action::Set { category, choice } => {
+			util::assert_category(&category);
+			util::assert_choice(&category, &choice);
+			data.categories.categories.insert(category, choice);
 			util::save_data(&data);
 		}
-		Action::Get { category: _ } => {}
+		Action::Get { category } => {
+			util::assert_category(&category);
+			let key = data.categories.categories.get(&category).unwrap();
+			println!("{}", key);
+		}
 		Action::List { category } => {
 			let list = |dir: PathBuf| {
 				for entry in fs::read_dir(&dir)
