@@ -1,24 +1,26 @@
+use std::collections::HashMap;
 use std::process::exit;
 use std::str;
 use std::{env, fs, path::PathBuf, process::Command};
 
 use serde::{Deserialize, Serialize};
 
-#[derive(Serialize, Deserialize)]
-pub struct Choices {
-	pub shell_prompt_bash: Option<String>,
+#[derive(Debug, Serialize, Deserialize)]
+pub struct Categories {
+	#[serde(flatten)]
+	pub categories: HashMap<String, String>,
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct Data {
-	pub choices: Choices,
+	pub categories: Categories,
 }
 
 pub fn run(category: &str, choice: &str, action: &str) {
-	let choose_dir = get_choose_dir();
+	let choose_dir = get_main_dir();
 
 	let choice_file = choose_dir
-		.join("choices")
+		.join("categories")
 		.join(category)
 		.join(format!("{}.sh", choice));
 
@@ -34,8 +36,18 @@ pub fn run(category: &str, choice: &str, action: &str) {
 	exit(code);
 }
 
+pub fn get_default_choice(category: &str) -> String {
+	let data = get_data();
+	if data.categories.categories.get(category.clone()).is_some() {
+		return data.categories.categories.get(category).unwrap().clone();
+	} else {
+		eprintln!("Could not find category: {}", category);
+		exit(1);
+	}
+}
+
 pub fn get_data() -> Data {
-	let path = get_choose_dir().join("data.json");
+	let path = get_main_dir().join("data.json");
 
 	let content = fs::read_to_string(path).unwrap();
 	let data: Data = serde_json::from_str(content.as_str()).unwrap();
@@ -43,13 +55,13 @@ pub fn get_data() -> Data {
 }
 
 pub fn save_data(data: &Data) {
-	let path = get_choose_dir().join("data.json");
+	let path = get_main_dir().join("data.json");
 
 	let deserialized = serde_json::to_string(data).unwrap();
 	fs::write(path, deserialized).unwrap();
 }
 
-pub fn get_choose_dir() -> PathBuf {
+pub fn get_main_dir() -> PathBuf {
 	let dotfiles_dir = match env::var("XDG_CONFIG_HOME") {
 		Ok(val) => {
 			let p = PathBuf::from(val);
@@ -62,5 +74,5 @@ pub fn get_choose_dir() -> PathBuf {
 		Err(..) => PathBuf::from(dirs::home_dir().unwrap()).join(".config"),
 	};
 
-	dotfiles_dir.join("choose")
+	dotfiles_dir.join("fox-default")
 }

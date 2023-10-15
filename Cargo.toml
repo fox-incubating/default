@@ -11,7 +11,9 @@ path = "src/main.rs"
 name = "default"
 
 [dependencies]
+anyhow = "1.0.75"
 clap = { version = "4.0.15", features = ["derive"] }
 dirs = "4.0.0"
 serde = { version = "1.0.152", features = ["derive"] }
 serde_json = "1.0.91"
+serde_yaml = "0.9.25"

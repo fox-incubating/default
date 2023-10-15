@@ -1,10 +1,10 @@
-use std::{fs, path::PathBuf};
+use std::{fs, path::PathBuf, process::exit};
 
 use clap::Parser;
 use cli::{Action, Args};
 
 mod cli;
-
+mod config;
 mod util;
 
 // EXECUTION PROVIDER
@@ -16,52 +16,14 @@ mod util;
 fn main() {
 	let cli = Args::parse();
 	let mut data = util::get_data();
+	// let cfg = config::config().unwrap();
 
 	match cli.action {
 		Action::Launch { category } => {
-			match category.as_str() {
-				"application-launcher" => {}
-				"file-manager" => {}
-				"image-viewer" => {}
-				"image-editor" => {}
-				"shell-prompt-bash" => {
-					let choice = data
-						.choices
-						.shell_prompt_bash
-						.unwrap_or(String::from("starship"));
-					util::run("shell-prompt-bash", choice.as_str(), "launch");
-				}
-				"shell-prompt-zsh" => {
-					let _args = vec!["starship", "init", "zsh", "--print-full-init"];
-				}
-				"menu-bar-text" => {
-					let _args = vec!["i3blocks"];
-				}
-				"terminal-emulator" => {
-					let _args = vec!["kitty"];
-				}
-				// brightness
-				"brightness-increase" => {}
-				"brightness-decrease" => {}
-				"brightness-reset" => {}
-				// song
-				"song-previous" => {}
-				"song-pause" => {}
-				"song-next" => {}
-				// volume
-				"volume-lower" => {}
-				"volume-raise" => {}
-				"volume-mute" => {}
-				"window-manager" => {}
-				&_ => todo!(),
-			}
+			let chosen = util::get_default_choice(&category);
+			util::run(&category, chosen.as_str(), "launch");
 		}
 		Action::Set { category, choice } => {
-			match category.as_str() {
-				"shell-prompt-bash" => data.choices.shell_prompt_bash = Some(String::from(choice)),
-				_ => {}
-			};
-
 			util::save_data(&data);
 		}
 		Action::Get { category: _ } => {}
@@ -73,25 +35,29 @@ fn main() {
 					let path = entry.unwrap().path();
 					let basename = path.file_name().unwrap();
 
-					println!("{}", basename.to_str().unwrap());
+					let s = String::from(basename.to_str().unwrap());
+					let s = s.strip_suffix(".sh").unwrap_or(&s);
+					println!("{}", s);
 				}
 			};
 
-			let choose_dir = util::get_choose_dir();
+			let choose_dir = util::get_main_dir();
 			if let Some(category) = category {
-				let dir = choose_dir.join("choices").join(category);
+				let dir = choose_dir.join("categories").join(category);
 				list(dir);
 			} else {
-				let dir = choose_dir.join("choices");
+				let dir = choose_dir.join("categories");
 				list(dir);
 			}
 		}
 		Action::Install { category, choice } => {
-			util::run(category.as_str(), choice.as_str(), "install")
+			util::run(&category, &choice, "install");
 		}
 		Action::Uninstall { category, choice } => {
-			util::run(category.as_str(), choice.as_str(), "uninstall")
+			util::run(&category, &choice, "uninstall");
 		}
-		Action::Test { category, choice } => util::run(category.as_str(), choice.as_str(), "test"),
+		Action::Test { category, choice } => {
+			util::run(&category, &choice, "test");
+		}
 	}
 }
